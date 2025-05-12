@@ -3,7 +3,7 @@ import React from 'react'
 const BuyCredit = () => {
   return (
     <div>
-      Buy Credit
+      Buy Credits
     </div>
   )
 }
