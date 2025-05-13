@@ -4,6 +4,7 @@ import Home from './pages/Home'
 import BuyCredit from './pages/BuyCredit'
 import Result from './pages/Result'
 import Navbar from './components/Navbar'
+import Footer from './components/Footer'
 
 const App = () => {
   return (
@@ -15,6 +16,9 @@ const App = () => {
         <Route path='/result' element={ <Result/>}/>
         <Route path='/buy' element={ <BuyCredit/>}/>
       </Routes>
+
+      {/* footer is outside routes so it will be displayed on all the pages */}
+      <Footer/>
        
     </div>
   )
