@@ -18,12 +18,13 @@ const registerUser= async(req,res)=>{
         const salt =  await bcrypt.genSalt(10)
         const hashedPassword = await bcrypt.hash(password,salt)
         
+        // object to store all user data in database
         const userData = {
             name,
             email,
             password: hashedPassword
         }
-        
+        // save info in mongodb
         const newUser = new userModel(userData)
         const user = await newUser.save()
         const token = jwt.sign({id : user._id},process.env.JWT_SECRET)
@@ -44,7 +45,7 @@ const loginUser = async (req, res)=>{
         const user = await userModel.findOne({email})
 
         if(!user){
-            return res({success:false, message:'User does not exist'})
+            return res.json({success:false, message:'User does not exist'})
         }
         const isMatch= await bcrypt.compare(password,user.password)
 
@@ -54,14 +55,26 @@ const loginUser = async (req, res)=>{
                
                res.json({success:true, token, user:{name: user.name}})
         }else{
-            return res({success:false, message: 'Invalid credentials'})
+            return res.json({success:false, message: 'Invalid credentials'})
         }
 
 
     } catch(error){
          console.log(error)
-        res.json({success:false, message:error.message})
+        res.json({success:false, message: error.message})
     }
 }
 
-export {registerUser, loginUser}
+
+const userCredits = async (req, res)=>{
+    try{
+        const{userId} = req.body
+        const user = await userModel.findById(userId)
+        res.json({success: true, credits : user.creditBalance, user:{name:user.name}})
+    }
+    catch(error){
+         console.log(error.message)
+         res.json({success:false, message:error.message})
+    }
+}
+export {registerUser, loginUser, userCredits};
