@@ -3,6 +3,11 @@
 import userModel from "../models/userModel.js";
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import dotenv from 'dotenv'
+
+// helps to load environment variables from a .env file into process.env
+// so that we can use them in our code
+dotenv.config()
 
 
 const registerUser= async(req,res)=>{
@@ -66,15 +71,32 @@ const loginUser = async (req, res)=>{
 }
 
 
-const userCredits = async (req, res)=>{
+// Previous code for user credits
+
+// const userCredits = async (req, res)=>{
+//     try{
+//         const{userId} = req.body
+//         const user = await userModel.findById(userId)
+//         res.json({success: true, credits : user.creditBalance, user:{name:user.name}})
+//     }
+//     catch(error){
+//          console.log(error.message)
+//          res.json({success:false, message:error.message})
+//     }
+// }
+
+// new code for user credits
+
+const userCredits = async (req, res) => {
     try{
-        const{userId} = req.body
+        const userId = req.userId;
+
         const user = await userModel.findById(userId)
         res.json({success: true, credits : user.creditBalance, user:{name:user.name}})
-    }
-    catch(error){
-         console.log(error.message)
-         res.json({success:false, message:error.message})
+    } catch(error){
+        console.log(error.message)
+        res.json({success:false, message:error.message})
     }
 }
+
 export {registerUser, loginUser, userCredits};
