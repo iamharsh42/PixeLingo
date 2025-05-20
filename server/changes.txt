@@ -1,0 +1,5 @@
+modified files:
+
+1) userController.js: modified the userCredits method/userController
+2) auth.js: modified the userAuth middleware
+3) imageController: modified import/export statements
