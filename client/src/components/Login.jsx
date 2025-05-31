@@ -22,7 +22,7 @@ const Login = () => {
 
       try{
           
-        if(state === 'login'){
+        if(state === 'Login'){
             const{data}= await axios.post(backendUrl + '/api/user/login', {email, password})
 
            if(data.success){
@@ -30,9 +30,8 @@ const Login = () => {
                 setUser(data.user)
                 localStorage.setItem('token', data.token)
                 setShowLogin(false)
-
-           }
-           else{
+                toast.success('Login successful!')
+           } else{
             toast.error(data.message)
            }
         }else{
@@ -43,7 +42,7 @@ const Login = () => {
                 setUser(data.user)
                 localStorage.setItem('token', data.token)
                 setShowLogin(false)
-
+                toast.success('Login successful!')
            }
            else{
             toast.error(data.message)
