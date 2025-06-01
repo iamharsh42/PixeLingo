@@ -2,13 +2,12 @@ import axios from "axios"
 import userModel from "../models/userModel.js"
 import FormData from 'form-data'
 
+// method to generate image using the clipdrop api
 export const generateImage = async (req, res)=>{
-    console.log("working....")
     try{
         const userId = req.userId
         const {prompt}=req.body
 
-        console.log("prompt: " + prompt)
         const user = await userModel.findById(userId)
 
         if(!user || !prompt){
