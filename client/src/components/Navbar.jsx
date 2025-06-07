@@ -12,8 +12,11 @@ const Navbar = () => {
 
 
 
+    // for debugging 
     const printCredits = () => {
         console.log("credits: " + credit)
+        console.log(user)
+        console.log("userCRedits: " + user.creditBalance + " test")
     };
    
     const navigate = useNavigate()//click on pricing to go to buy credits page
@@ -23,6 +26,7 @@ const Navbar = () => {
     return (
         // to put items on right side and logo on left side:flex
         <div className='pt-0 flex items-center justify-between py-4'>
+            {/* <button style={{"cursor": "pointer"}} onClick={printCredits}>test</button> */}
             {/* when we click on the logo it will redirect to the home page */}
             <Link to='/'>
                 <img src={assets.logo} className='w-28 sm:w-32 lg:w-40' /></Link>
@@ -35,7 +39,8 @@ const Navbar = () => {
                     <div className='flex items-center gap-2 sm:gap-3'>
                         <button onClick={()=>navigate('/buy')} className='flex items-center gap-2 bg-blue-100 px-4 sm:px-6 py-1.5 sm:py-3 rounded-full hover:scale-105 transition-all duration-700'>
                             <img className='w-5' src={assets.credit_star}/>
-                            <p className='text-xs sm:text-sm font-medium text-gray-600' >Credit left : {user.creditBalance} </p>
+                            {/* <p className='text-xs sm:text-sm font-medium text-gray-600' >Credit left : {user.creditBalance} </p> */}
+                            <p className='text-xs sm:text-sm font-medium text-gray-600' >Credit left : {credit} </p>
                         </button>
                         <p className='text-gray-600 max-sm:hidden pl-4'>Hi, {user.name}</p>
                         <div className='relative group'>
