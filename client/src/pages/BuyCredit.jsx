@@ -1,4 +1,4 @@
-import React,{useContext} from 'react'
+import React,{useContext, useEffect} from 'react'
 import { assets, plans } from '../assets/assets'
 import { AppContext } from '../context/AppContext'
 import { motion } from 'motion/react'
@@ -69,7 +69,39 @@ const handlePayment = async (amount) => {
   }
 };
 
+// new code
 
+  useEffect(() => {
+    const query = new URLSearchParams(window.location.search);
+    const sessionId = query.get('session_id');
+    const amount = query.get('amount');
+
+    if (sessionId && amount && user) {
+      axios
+        .post(`${backendUrl}/api/payment/verify-session`, { sessionId })
+        .then((res) => {
+          if (res.data.success && res.data.paymentStatus === "paid") {
+            console.log("Calling addCredits with amount:", amount);
+            return axios.post(
+              `${backendUrl}/api/payment/add-credits`,
+              { amount: Number(amount) },
+              { headers: { token } }
+            );
+          } else {
+            throw new Error("Payment not successful");
+          }
+        })
+        .then((res) => {
+          toast.success("Credits added successfully!");
+          loadCreditsData(); // refresh credits in UI
+          navigate('/buy', { replace: true }); // clean up URL
+        })
+        .catch((err) => {
+          toast.error("Payment verification failed!");
+          navigate('/buy', { replace: true });
+        });
+    }
+  }, [user, backendUrl, token, loadCreditsData, navigate]);
 
 
   return (

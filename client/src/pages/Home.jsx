@@ -4,9 +4,11 @@ import Steps from '../components/Steps'
 import Description from '../components/Description'
 import Testimonials from '../components/Testimonials'
 import GenerateBtn from '../components/GenerateBtn'
+import { useLocation, useNavigate } from 'react-router-dom';
 
 
 const Home = () => {
+
   return (
     <div>
       <Header/>
@@ -14,7 +16,6 @@ const Home = () => {
       <Description/>
       <Testimonials/>
       <GenerateBtn/>
-      
     </div>
   )
 }

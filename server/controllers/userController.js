@@ -85,6 +85,82 @@ const userCredits = async (req, res)=>{
     }
 }
 
+// route to add credits
+
+// const addCredits = async (req, res) => {
+//   try {
+//     console.log(req)
+//     const userId = req.userId;
+//     const { amount } = req.body;
+
+//     const user = await userModel.findById(userId);
+//     if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+//     // Dynamic mapping of amount -> credits
+//     const creditMapping = {
+//       10: 100,
+//       50: 500,
+//       250: 5000,
+//     };
+
+//     const creditsToAdd = creditMapping[amount];
+//     if (!creditsToAdd) {
+//       return res.status(400).json({ success: false, message: "Invalid amount" });
+//     }
+
+//     user.credits += creditsToAdd;
+//     console.log("user credits:" + user.credits)
+//     await user.save();
+
+//     return res.json({ success: true, message: "Credits added", credits: user.credits });
+//   } catch (err) {
+//     console.error(err);
+//     return res.status(500).json({ success: false, message: "Server error" });
+//   }
+// };
+
+const addCredits = async (req, res) => {
+  try {
+    const userId = req.userId;
+    const { amount } = req.body;
+    const numericAmount = Number(amount);
+
+    console.log("Received amount:", amount, "as number:", numericAmount);
+
+    if (isNaN(numericAmount)) {
+      return res.status(400).json({ success: false, message: "Amount is not a number" });
+    }
+
+    const user = await userModel.findById(userId);
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    const creditMapping = {
+      10: 100,
+      50: 500,
+      250: 5000,
+    };
+
+    const creditsToAdd = creditMapping[numericAmount];
+    if (!creditsToAdd) {
+      return res.status(400).json({ success: false, message: "Invalid amount" });
+    }
+
+    console.log("credits before: " + user.creditBalance)
+    user.creditBalance += creditsToAdd;
+    console.log("credits: " + user.creditBalance)
+    await user.save();
+
+    return res.json({ success: true, message: "Credits added", credits: user.credits });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
+
+
+
 // const razorpayInstance= new razorpay({
 //     key_id: process.env.RAZORPAY_KEY_ID,
 //     key_secret: process.env.RAZORPAY_KEY_SECRET,
@@ -177,8 +253,11 @@ const createCheckoutSession = async (req, res) => {
       mode: 'payment',
 
       
-      success_url: 'http://localhost:5173/',
-      cancel_url: 'http://localhost:5173/',
+    //    success_url: 'http://localhost:5173',
+    //    cancel_url: 'http://localhost:5173/buy',
+    success_url: `http://localhost:5173/buy?session_id={CHECKOUT_SESSION_ID}&amount=${amount}`,
+    cancel_url: 'http://localhost:5173/buy',
+
     });
 
     console.log(session)
@@ -189,7 +268,22 @@ const createCheckoutSession = async (req, res) => {
   }
 };
 
+// Add this to your payment controller
+const verifySession = async (req, res) => {
+  const { sessionId } = req.body;
+  try {
+    const session = await stripe.checkout.sessions.retrieve(sessionId);
+    if (session.payment_status === "paid") {
+      return res.json({ success: true, paymentStatus: "paid" });
+    } else {
+      return res.json({ success: false, paymentStatus: session.payment_status });
+    }
+  } catch (err) {
+    return res.status(500).json({ success: false, error: "Verification failed" });
+  }
+};
 
 
 
-export {registerUser, loginUser, userCredits, createCheckoutSession };
+
+export {registerUser, loginUser, userCredits, createCheckoutSession, addCredits, verifySession};
