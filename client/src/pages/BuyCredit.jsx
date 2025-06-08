@@ -38,20 +38,26 @@ const BuyCredit = () => {
   
   // stripe integration
 
-  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY); 
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY); 
 
-  const handlePayment = async (amount) => {
-      try {
+const handlePayment = async (amount) => {
+  try {
     toast.info("Redirecting to Stripe...");
 
     const stripe = await stripePromise;
 
-    const response = await axios.post('http://localhost:5000/api/payment/create-checkout-session', {
-      amount,
-    });
+    const response = await axios.post(
+      `${backendUrl}/api/payment/create-checkout-session`,
+      { amount },
+      {
+        headers: { token }
+      }
+    );
+
+    console.log("Stripe response:", response.data);
 
     const result = await stripe.redirectToCheckout({
-      sessionId: response.data.id,
+      sessionId: response.data.id
     });
 
     if (result.error) {
@@ -61,7 +67,10 @@ const BuyCredit = () => {
     toast.error("Something went wrong!");
     console.error(err);
   }
-  }
+};
+
+
+
 
   return (
     <motion.div 

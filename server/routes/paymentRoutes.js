@@ -4,7 +4,7 @@ import userAuth from '../middlewares/auth.js'
 
 const paymentRouter = express.Router()
 
-paymentRouter.post('/payment', userAuth, createCheckoutSession)
+paymentRouter.post('/create-checkout-session', userAuth, createCheckoutSession)
 
 export default paymentRouter
 

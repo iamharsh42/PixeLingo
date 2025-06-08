@@ -6,7 +6,7 @@ import jwt from 'jsonwebtoken'
 import  dotenv from 'dotenv'
 import razorpay from 'razorpay'
 import transactionModel from "../models/transactionModel.js";
-const Stripe = require('stripe');
+import Stripe from 'stripe';
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 
@@ -169,20 +169,26 @@ const createCheckoutSession = async (req, res) => {
             product_data: {
               name: `Plan for ₹${amount}`,
             },
-            unit_amount: amount * 100, // convert to paisa
+            unit_amount: amount * 100,
           },
           quantity: 1,
         },
       ],
       mode: 'payment',
+
+      
+      success_url: 'http://localhost:5173/',
+      cancel_url: 'http://localhost:5173/',
     });
 
+    console.log(session)
     res.json({ success: true, id: session.id });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: 'Something went wrong' });
   }
 };
+
 
 
 
