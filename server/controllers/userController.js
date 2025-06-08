@@ -6,6 +6,8 @@ import jwt from 'jsonwebtoken'
 import  dotenv from 'dotenv'
 import razorpay from 'razorpay'
 import transactionModel from "../models/transactionModel.js";
+const Stripe = require('stripe');
+const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
 
 dotenv.config()
@@ -152,4 +154,36 @@ const paymentRazorpay= async(req, res)=>{
     }
 }
 
-export {registerUser, loginUser, userCredits, paymentRazorpay };
+// stripe payment method, return true if successful
+
+const createCheckoutSession = async (req, res) => {
+  const { amount } = req.body;
+
+  try {
+    const session = await stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: [
+        {
+          price_data: {
+            currency: 'inr',
+            product_data: {
+              name: `Plan for ₹${amount}`,
+            },
+            unit_amount: amount * 100, // convert to paisa
+          },
+          quantity: 1,
+        },
+      ],
+      mode: 'payment',
+    });
+
+    res.json({ success: true, id: session.id });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Something went wrong' });
+  }
+};
+
+
+
+export {registerUser, loginUser, userCredits, createCheckoutSession };
