@@ -14,8 +14,8 @@ const Login = () => {
 
     // states for storing user details
     const [name, setName] = useState('')
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState('david@gmail.com')
+    const [password, setPassword] = useState('david123')
 
 
     const onSubmitHandler = async (e)=>{
