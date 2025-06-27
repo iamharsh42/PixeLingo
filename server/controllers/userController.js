@@ -255,8 +255,8 @@ const createCheckoutSession = async (req, res) => {
       
     //    success_url: 'http://localhost:5173',
     //    cancel_url: 'http://localhost:5173/buy',
-    success_url: `http://localhost:5173/buy?session_id={CHECKOUT_SESSION_ID}&amount=${amount}`,
-    cancel_url: 'http://localhost:5173/buy',
+    success_url: `https://pixelingo-dev.onrender.com/buy?session_id={CHECKOUT_SESSION_ID}&amount=${amount}`,
+    cancel_url: 'https://pixelingo-dev.onrender.com/buy',
 
     });
 
